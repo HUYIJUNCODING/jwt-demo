@@ -1,10 +1,10 @@
 <template>
-<div>HOME PAGE</div>
+    <div>HOME PAGE</div>
 </template>
 
 <script>
 export default {
-    name: "Home",
+    name: "Home",   
     setup(props) {},
 };
 </script>
