@@ -5,7 +5,8 @@
                 <img
                     v-show="
                         !state.usernameInputIsFocus &&
-                        !state.passwordInputIsFocus
+                        !state.passwordInputIsFocus &&
+                        !state.confirmPasswordInputIsFocus
                     "
                     src="../assets/images/normal.png"
                     class="normal"
@@ -18,14 +19,19 @@
                     alt=""
                 />
                 <img
-                    v-show="state.passwordInputIsFocus"
+                    v-show="
+                        state.passwordInputIsFocus ||
+                        state.confirmPasswordInputIsFocus
+                    "
                     src="../assets/images/blindfold.png"
                     class="blindfold"
                     alt=""
                 />
             </div>
             <div class="panel">
-                <span class="title">登录</span>
+                <span class="title">{{
+                    state.loginType ? "登录" : "注册"
+                }}</span>
                 <i class="close-btn" @click="close"></i>
             </div>
             <div class="input-box">
@@ -33,61 +39,113 @@
                     class="username"
                     :class="state.usernameInputIsFocus && 'focus'"
                     type="text"
+                    maxlength="10"
+                    v-model="state.username"
                     placeholder="请输入用户名/手机号"
-                    @focus="onFocus(1)"
-                    @blur="onBlur(1)"
+                    @focus="onFocus('usernameInputIsFocus')"
+                    @blur="onBlur('usernameInputIsFocus')"
                 />
                 <input
                     class="password"
                     :class="state.passwordInputIsFocus && 'focus'"
-                    type="text"
+                    type="password"
+                    maxlength="20"
+                    v-model="state.password"
                     placeholder="请输入密码"
-                    @focus="onFocus(2)"
-                    @blur="onBlur(2)"
+                    @focus="onFocus('passwordInputIsFocus')"
+                    @blur="onBlur('passwordInputIsFocus')"
+                />
+                <input
+                    v-show="!state.loginType"
+                    class="confirm-password"
+                    :class="state.confirmPasswordInputIsFocus && 'focus'"
+                    type="password"
+                    maxlength="20"
+                    v-model="state.confirmPassword"
+                    placeholder="请确认密码"
+                    @focus="onFocus('confirmPasswordInputIsFocus')"
+                    @blur="onBlur('confirmPasswordInputIsFocus')"
                 />
             </div>
 
-            <button class="submit-btn">登 录</button>
-            <div class="prompt-box">您还未注册？前去注册</div>
+            <button class="submit-btn" @click="submit">
+                {{ state.loginType ? "登 录" : "注 册" }}
+            </button>
+            <div class="prompt-box" @click="switcher">
+                {{
+                    state.loginType
+                        ? "还未注册？快去注册吧！"
+                        : "账号已注册，快去登录吧！"
+                }}
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, reactive } from "vue";
-export default {
+import { ref, reactive, defineComponent } from "vue";
+export default defineComponent({
     name: "Login",
-    setup(props) {
+    setup(props, ctx) {
         const state = reactive({
-            usernameInputIsFocus: false,
-            passwordInputIsFocus: false,
-            modalStatus: true,
+            loginType: 0, //0:注册,1:登录
+            username: "", //用户名
+            password: "", //密码
+            confirmPassword: "", //确认密码
+            modalStatus: true, //模态框显示隐藏状态
+            usernameInputIsFocus: false, //用户名输入框焦点状态
+            passwordInputIsFocus: false, //密码输入框焦点状态
+            confirmPasswordInputIsFocus: false, //确认密码输入框焦点状态
         });
 
-        const onFocus = (type) => {
-            type == 1
-                ? (state.usernameInputIsFocus = true)
-                : (state.passwordInputIsFocus = true);
-        };
-
-        const onBlur = (type) => {
-            type == 1
-                ? (state.usernameInputIsFocus = false)
-                : (state.passwordInputIsFocus = false);
-        };
-
-        const close = () => {
+        //获取焦点
+        function onFocus(statusName) {
+            state[statusName] = true;
+        }
+        //失去焦点
+        function onBlur(statusName) {
+            state[statusName] = false;
+        }
+        //关闭模态窗
+        function close() {
             state.modalStatus = false;
-        };
+        }
+
+        //切换登录/注册
+        function switcher() {
+            state.loginType = state.loginType ? 0 : 1;
+        }
+        //提交
+        function submit() {
+            if (!state.username.trim()) {
+                this.$message.warning("用户名不能为空");
+                return;
+            }
+            if (!state.password.trim()) {
+                this.$message.warning("密码不能为空");
+                return;
+            }
+            if(!state.loginType && !state.confirmPassword.trim()) {
+                this.$message.warning("确认密码不能为空");
+                return;
+            }
+
+            
+        }
 
         return {
             state,
+            close,
             onFocus,
             onBlur,
-            close,
+            switcher,
+            submit,
         };
     },
-};
+    methods: {
+        //提交
+    },
+});
 </script>
 
 <style scoped lang="scss">
@@ -151,24 +209,22 @@ export default {
             .close-btn {
                 position: relative;
                 cursor: pointer;
-                transform: rotate(45deg);
                 &::before,
                 &::after {
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    transform: translate(-50%, -50%);
+                    width: 15px;
+                    height: 2px;
                     content: "";
                     border-radius: 1px;
                     background-color: #767676;
                 }
                 &:before {
-                    width: 15px;
-                    height: 2px;
+                    transform: translate(-50%, -50%) rotate(45deg);
                 }
                 &:after {
-                    width: 2px;
-                    height: 15px;
+                    transform: translate(-50%, -50%) rotate(-45deg);
                 }
             }
         }
@@ -176,7 +232,8 @@ export default {
             position: relative;
             margin-bottom: 0.8rem;
             .username,
-            .password {
+            .password,
+            .confirm-password {
                 width: 100%;
                 margin-bottom: 0.8rem;
                 padding: 10px;
