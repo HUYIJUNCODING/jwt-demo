@@ -84,6 +84,7 @@
 
 <script>
 import { ref, reactive, defineComponent } from "vue";
+import {registerAPI,loginAPI } from '../api/login'
 export default defineComponent({
     name: "Login",
     setup(props, ctx) {
@@ -130,6 +131,17 @@ export default defineComponent({
                 return;
             }
 
+            //注册
+            if(!state.loginType) {
+                registerAPI().then(res=> {
+                    console.log(res,'register success')
+                })
+            }else {
+                //登录
+                loginAPI().then(res=> {
+                     console.log(res,'login success')
+                })
+            }
             
         }
 
