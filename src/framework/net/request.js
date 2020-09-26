@@ -27,13 +27,14 @@ service.interceptors.request.use(
 
 // request interceptor
 service.interceptors.response.use(
-    (res) => {
-        if (res.error !== 0) {
-            message.error(res["error_reason"], 1.5 * 1000);
+    response => {  
+        console.log(response.data,'data')
+        if (response.data.error !== 0) {
+            message.error(response["error_reason"]);
             return { fail: true };
         } else return response.data;
     },
-    (error) => {
+    error => {
         return Promise.reject(error);
     }
 );

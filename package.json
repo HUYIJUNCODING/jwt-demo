@@ -8,16 +8,17 @@
   "dependencies": {
     "ant-design-vue": "^2.0.0-beta.9",
     "axios": "^0.20.0",
-    "koa": "^2.13.0",
-    "koa-bodyparser": "^4.3.0",
-    "koa-json": "^2.0.2",
-    "koa-jwt": "^4.0.0",
-    "koa-router": "^9.4.0",
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.11"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.0-rc.1",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-json": "^2.0.2",
+    "koa-jwt": "^4.0.0",
+    "koa-router": "^9.4.0",
+    "nodemon": "^2.0.4",
     "sass": "^1.26.11",
     "vite": "^1.0.0-rc.1"
   }

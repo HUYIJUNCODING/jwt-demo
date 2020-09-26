@@ -1,95 +1,59 @@
 <template>
-    <div v-if="state.modalStatus" class="auth-modal-box">
-        <div class="auth-form">
-            <div class="panfish">
-                <img
-                    v-show="
+<div v-if="state.modalStatus" class="auth-modal-box">
+    <div class="auth-form">
+        <div class="panfish">
+            <img v-show="
                         !state.usernameInputIsFocus &&
                         !state.passwordInputIsFocus &&
                         !state.confirmPasswordInputIsFocus
-                    "
-                    src="../assets/images/normal.png"
-                    class="normal"
-                    alt=""
-                />
-                <img
-                    v-show="state.usernameInputIsFocus"
-                    src="../assets/images/greeting.png"
-                    class="greeting"
-                    alt=""
-                />
-                <img
-                    v-show="
+                    " src="../assets/images/normal.png" class="normal" alt="" />
+            <img v-show="state.usernameInputIsFocus" src="../assets/images/greeting.png" class="greeting" alt="" />
+            <img v-show="
                         state.passwordInputIsFocus ||
                         state.confirmPasswordInputIsFocus
-                    "
-                    src="../assets/images/blindfold.png"
-                    class="blindfold"
-                    alt=""
-                />
-            </div>
-            <div class="panel">
-                <span class="title">{{
+                    " src="../assets/images/blindfold.png" class="blindfold" alt="" />
+        </div>
+        <div class="panel">
+            <span class="title">{{
                     state.loginType ? "登录" : "注册"
                 }}</span>
-                <i class="close-btn" @click="close"></i>
-            </div>
-            <div class="input-box">
-                <input
-                    class="username"
-                    :class="state.usernameInputIsFocus && 'focus'"
-                    type="text"
-                    maxlength="10"
-                    v-model="state.username"
-                    placeholder="请输入用户名/手机号"
-                    @focus="onFocus('usernameInputIsFocus')"
-                    @blur="onBlur('usernameInputIsFocus')"
-                />
-                <input
-                    class="password"
-                    :class="state.passwordInputIsFocus && 'focus'"
-                    type="password"
-                    maxlength="20"
-                    v-model="state.password"
-                    placeholder="请输入密码"
-                    @focus="onFocus('passwordInputIsFocus')"
-                    @blur="onBlur('passwordInputIsFocus')"
-                />
-                <input
-                    v-show="!state.loginType"
-                    class="confirm-password"
-                    :class="state.confirmPasswordInputIsFocus && 'focus'"
-                    type="password"
-                    maxlength="20"
-                    v-model="state.confirmPassword"
-                    placeholder="请确认密码"
-                    @focus="onFocus('confirmPasswordInputIsFocus')"
-                    @blur="onBlur('confirmPasswordInputIsFocus')"
-                />
-            </div>
+            <i class="close-btn" @click="close"></i>
+        </div>
+        <div class="input-box">
+            <input class="username" :class="state.usernameInputIsFocus && 'focus'" type="text" maxlength="10" v-model="state.username" placeholder="请输入用户名/手机号" @focus="onFocus('usernameInputIsFocus')" @blur="onBlur('usernameInputIsFocus')" />
+            <input class="password" :class="state.passwordInputIsFocus && 'focus'" type="password" maxlength="20" v-model="state.password" placeholder="请输入密码" @focus="onFocus('passwordInputIsFocus')" @blur="onBlur('passwordInputIsFocus')" />
+            <input v-show="!state.loginType" class="confirm-password" :class="state.confirmPasswordInputIsFocus && 'focus'" type="password" maxlength="20" v-model="state.confirmPassword" placeholder="请确认密码" @focus="onFocus('confirmPasswordInputIsFocus')" @blur="onBlur('confirmPasswordInputIsFocus')" />
+        </div>
 
-            <button class="submit-btn" @click="submit">
-                {{ state.loginType ? "登 录" : "注 册" }}
-            </button>
-            <div class="prompt-box" @click="switcher">
-                {{
+        <button class="submit-btn" @click="submit">
+            {{ state.loginType ? "登 录" : "注 册" }}
+        </button>
+        <div class="prompt-box" @click="switcher">
+            {{
                     state.loginType
                         ? "还未注册？快去注册吧！"
                         : "账号已注册，快去登录吧！"
                 }}
-            </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
-import { ref, reactive, defineComponent } from "vue";
-import {registerAPI,loginAPI } from '../api/login'
+import {
+    ref,
+    reactive,
+    defineComponent
+} from "vue";
+import {
+    registerAPI,
+    loginAPI
+} from "../api/login";
 export default defineComponent({
     name: "Login",
     setup(props, ctx) {
         const state = reactive({
-            loginType: 0, //0:注册,1:登录
+            loginType: 1, //0:注册,1:登录
             username: "", //用户名
             password: "", //密码
             confirmPassword: "", //确认密码
@@ -115,6 +79,9 @@ export default defineComponent({
         //切换登录/注册
         function switcher() {
             state.loginType = state.loginType ? 0 : 1;
+            state.username = "";
+            state.password = "";
+            state.confirmPassword = ""
         }
         //提交
         function submit() {
@@ -126,23 +93,38 @@ export default defineComponent({
                 this.$message.warning("密码不能为空");
                 return;
             }
-            if(!state.loginType && !state.confirmPassword.trim()) {
+            if (!state.loginType && !state.confirmPassword.trim()) {
                 this.$message.warning("确认密码不能为空");
                 return;
             }
 
-            //注册
-            if(!state.loginType) {
-                registerAPI().then(res=> {
-                    console.log(res,'register success')
-                })
-            }else {
-                //登录
-                loginAPI().then(res=> {
-                     console.log(res,'login success')
-                })
+            if (!state.loginType && state.password !== state.confirmPassword) {
+                this.$message.warning("两次密码输入不一致,请重新输入");
+                return;
             }
-            
+
+            //注册
+            if (!state.loginType) {
+                registerAPI({
+                    username: state.username,
+                    password: state.password,
+                }).then((res) => {
+                    if (res.error == 0) {
+                        this.$message.success("注册成功")
+                    }
+                });
+            } else {
+                //登录
+                loginAPI({
+                    username: state.username,
+                    password: state.password,
+                }).then(res => {
+                    console.log(res, 'res')
+                    // if (res.error == 0 && res.data) {
+                    //     this.$message.success("登录成功")
+                    // }
+                });
+            }
         }
 
         return {
@@ -160,7 +142,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .auth-modal-box {
     display: flex;
     align-items: center;
@@ -172,6 +154,7 @@ export default defineComponent({
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 500;
+
     .auth-form {
         position: relative;
         padding: 2rem;
@@ -180,9 +163,11 @@ export default defineComponent({
         font-size: 1.167rem;
         background-color: #fff;
         border-radius: 2px;
+
         .panfish {
             img {
                 height: auto;
+
                 &.normal {
                     position: absolute;
                     top: 0;
@@ -191,6 +176,7 @@ export default defineComponent({
                     z-index: 1;
                     transform: translate(-50%, -83%);
                 }
+
                 &.greeting {
                     position: absolute;
                     top: 0;
@@ -199,6 +185,7 @@ export default defineComponent({
                     z-index: 1;
                     transform: translate(-50%, -75.8%);
                 }
+
                 &.blindfold {
                     position: absolute;
                     top: 0;
@@ -209,18 +196,22 @@ export default defineComponent({
                 }
             }
         }
+
         .panel {
             display: flex;
             justify-content: space-between;
             align-content: center;
             margin: 0 0 2rem;
+
             .title {
                 font-weight: 700;
                 font-size: 1.5rem;
             }
+
             .close-btn {
                 position: relative;
                 cursor: pointer;
+
                 &::before,
                 &::after {
                     position: absolute;
@@ -232,17 +223,21 @@ export default defineComponent({
                     border-radius: 1px;
                     background-color: #767676;
                 }
+
                 &:before {
                     transform: translate(-50%, -50%) rotate(45deg);
                 }
+
                 &:after {
                     transform: translate(-50%, -50%) rotate(-45deg);
                 }
             }
         }
+
         .input-box {
             position: relative;
             margin-bottom: 0.8rem;
+
             .username,
             .password,
             .confirm-password {
@@ -252,11 +247,13 @@ export default defineComponent({
                 border: 1px solid #e9e9e9;
                 border-radius: 2px;
                 outline: none;
+
                 &.focus {
                     border-color: #007fff;
                 }
             }
         }
+
         .submit-btn {
             width: 100%;
             height: 3.334rem;
@@ -270,6 +267,7 @@ export default defineComponent({
             border: 0;
             outline: none;
         }
+
         .prompt-box {
             margin: 1rem 0 0;
             color: #007fff;
