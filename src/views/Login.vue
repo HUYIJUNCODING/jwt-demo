@@ -1,54 +1,90 @@
 <template>
-<div v-if="state.modalStatus" class="auth-modal-box">
-    <div class="auth-form">
-        <div class="panfish">
-            <img v-show="
+    <div v-if="state.modalStatus" class="auth-modal-box">
+        <div class="auth-form">
+            <div class="panfish">
+                <img
+                    v-show="
                         !state.usernameInputIsFocus &&
                         !state.passwordInputIsFocus &&
                         !state.confirmPasswordInputIsFocus
-                    " src="../assets/images/normal.png" class="normal" alt="" />
-            <img v-show="state.usernameInputIsFocus" src="../assets/images/greeting.png" class="greeting" alt="" />
-            <img v-show="
+                    "
+                    src="../assets/images/normal.png"
+                    class="normal"
+                    alt=""
+                />
+                <img
+                    v-show="state.usernameInputIsFocus"
+                    src="../assets/images/greeting.png"
+                    class="greeting"
+                    alt=""
+                />
+                <img
+                    v-show="
                         state.passwordInputIsFocus ||
                         state.confirmPasswordInputIsFocus
-                    " src="../assets/images/blindfold.png" class="blindfold" alt="" />
-        </div>
-        <div class="panel">
-            <span class="title">{{
+                    "
+                    src="../assets/images/blindfold.png"
+                    class="blindfold"
+                    alt=""
+                />
+            </div>
+            <div class="panel">
+                <span class="title">{{
                     state.loginType ? "登录" : "注册"
                 }}</span>
-            <i class="close-btn" @click="close"></i>
-        </div>
-        <div class="input-box">
-            <input class="username" :class="state.usernameInputIsFocus && 'focus'" type="text" maxlength="10" v-model="state.username" placeholder="请输入用户名/手机号" @focus="onFocus('usernameInputIsFocus')" @blur="onBlur('usernameInputIsFocus')" />
-            <input class="password" :class="state.passwordInputIsFocus && 'focus'" type="password" maxlength="20" v-model="state.password" placeholder="请输入密码" @focus="onFocus('passwordInputIsFocus')" @blur="onBlur('passwordInputIsFocus')" />
-            <input v-show="!state.loginType" class="confirm-password" :class="state.confirmPasswordInputIsFocus && 'focus'" type="password" maxlength="20" v-model="state.confirmPassword" placeholder="请确认密码" @focus="onFocus('confirmPasswordInputIsFocus')" @blur="onBlur('confirmPasswordInputIsFocus')" />
-        </div>
+                <i class="close-btn" @click="close"></i>
+            </div>
+            <div class="input-box">
+                <input
+                    class="username"
+                    :class="state.usernameInputIsFocus && 'focus'"
+                    type="text"
+                    maxlength="10"
+                    v-model="state.username"
+                    placeholder="请输入用户名/手机号"
+                    @focus="onFocus('usernameInputIsFocus')"
+                    @blur="onBlur('usernameInputIsFocus')"
+                />
+                <input
+                    class="password"
+                    :class="state.passwordInputIsFocus && 'focus'"
+                    type="password"
+                    maxlength="20"
+                    v-model="state.password"
+                    placeholder="请输入密码"
+                    @focus="onFocus('passwordInputIsFocus')"
+                    @blur="onBlur('passwordInputIsFocus')"
+                />
+                <input
+                    v-show="!state.loginType"
+                    class="confirm-password"
+                    :class="state.confirmPasswordInputIsFocus && 'focus'"
+                    type="password"
+                    maxlength="20"
+                    v-model="state.confirmPassword"
+                    placeholder="请确认密码"
+                    @focus="onFocus('confirmPasswordInputIsFocus')"
+                    @blur="onBlur('confirmPasswordInputIsFocus')"
+                />
+            </div>
 
-        <button class="submit-btn" @click="submit">
-            {{ state.loginType ? "登 录" : "注 册" }}
-        </button>
-        <div class="prompt-box" @click="switcher">
-            {{
+            <button class="submit-btn" @click="submit">
+                {{ state.loginType ? "登 录" : "注 册" }}
+            </button>
+            <div class="prompt-box" @click="switcher">
+                {{
                     state.loginType
                         ? "还未注册？快去注册吧！"
                         : "账号已注册，快去登录吧！"
                 }}
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
-import {
-    ref,
-    reactive,
-    defineComponent
-} from "vue";
-import {
-    registerAPI,
-    loginAPI
-} from "../api/login";
+import { ref, reactive, defineComponent } from "vue";
+import { registerAPI, loginAPI } from "../api/login";
 export default defineComponent({
     name: "Login",
     setup(props, ctx) {
@@ -81,7 +117,7 @@ export default defineComponent({
             state.loginType = state.loginType ? 0 : 1;
             state.username = "";
             state.password = "";
-            state.confirmPassword = ""
+            state.confirmPassword = "";
         }
         //提交
         function submit() {
@@ -97,7 +133,6 @@ export default defineComponent({
                 this.$message.warning("确认密码不能为空");
                 return;
             }
-
             if (!state.loginType && state.password !== state.confirmPassword) {
                 this.$message.warning("两次密码输入不一致,请重新输入");
                 return;
@@ -110,7 +145,7 @@ export default defineComponent({
                     password: state.password,
                 }).then((res) => {
                     if (res.error == 0) {
-                        this.$message.success("注册成功")
+                        this.$message.success("注册成功");
                     }
                 });
             } else {
@@ -118,11 +153,10 @@ export default defineComponent({
                 loginAPI({
                     username: state.username,
                     password: state.password,
-                }).then(res => {
-                    console.log(res, 'res')
-                    // if (res.error == 0 && res.data) {
-                    //     this.$message.success("登录成功")
-                    // }
+                }).then((res) => {
+                    if (res.error == 0 && res.data) {
+                        this.$message.success("登录成功");
+                    }
                 });
             }
         }

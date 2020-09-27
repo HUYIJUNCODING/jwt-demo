@@ -6,7 +6,7 @@ const info = require('./info')
 router.use('/api',user.routes(),user.allowedMethods())
 router.use('/api',info.routes(),info.allowedMethods())
 
-// module.exports = router;
+module.exports = router;
 
 
 

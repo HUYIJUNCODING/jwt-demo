@@ -1,9 +1,9 @@
-import request from '../framework/net/request'
+import request from "../framework/net/request";
 
 export function listAPI(data) {
-    request({
-        url: 'api/list',
-        method: 'get',
-        data
-    })
+    return request({
+        url: "api/list",
+        method: "get",
+        data,
+    });
 }

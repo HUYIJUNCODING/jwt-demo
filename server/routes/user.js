@@ -6,7 +6,7 @@ router.post("/register", async (ctx) => {
 });
 
 //登录
-router.post("/login", async (ctx) => {
+router.post("/login", async (ctx) => {  
     ctx.body = {
         data: ctx.request.body,
         error: 0,

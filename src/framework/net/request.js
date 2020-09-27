@@ -16,8 +16,6 @@ const service = axios.create({
 
 service.interceptors.request.use(
     (config) => {
-        // config.headers.token = getMallToken();
-
         return config;
     },
     (error) => {

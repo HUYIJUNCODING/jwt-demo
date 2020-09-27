@@ -17,8 +17,12 @@
     "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
     "koa-jwt": "^4.0.0",
+    "koa-logger": "^3.2.1",
     "koa-router": "^9.4.0",
+    "moment": "^2.29.0",
+    "mongoose": "^5.10.7",
     "nodemon": "^2.0.4",
+    "jsonwebtoken": "^8.5.1",
     "sass": "^1.26.11",
     "vite": "^1.0.0-rc.1"
   }
