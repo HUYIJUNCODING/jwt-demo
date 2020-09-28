@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-import { connectUrl } from '../../config'
+const config = require('../../config')
 
-mongoose.connect(connectUrl);
+mongoose.connect(config.connectUrl);
 
 const db = mongoose.connection;
 

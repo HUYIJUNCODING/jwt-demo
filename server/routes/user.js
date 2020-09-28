@@ -1,23 +1,14 @@
 const router = require("koa-router")();
 
+const UserController = require('../controllers/user');
+
 //注册
-router.post("/register", async (ctx) => {
-    console.log("register");
-});
+router.post("/register", UserController.register);
 
 //登录
-router.post("/login", async (ctx) => {  
-    ctx.body = {
-        data: ctx.request.body,
-        error: 0,
-        error_reason: '登录成功'
-    }
-    console.log("------login---------");
-});
+router.post("/login", UserController.login);
 
 //用户信息查询
-router.post("/userinfo", async (ctx) => {
-    console.log("userinfo");
-});
+router.post("/userinfo", UserController.userinfo);
 
 module.exports = router;

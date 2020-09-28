@@ -1,6 +1,8 @@
 
-export const connectUrl = 'mongodb://localhost:27017/jwtdemo' 
-export const port = process.env.PORT || 3000
-export const baseApi = 'api';
-export const secret = 'jwt_secret';
-export const unless_path = [/\/api\/register/, /\/api\/login/]
+module.exports = {
+    connectUrl: 'mongodb://localhost:27017/jwtdemo',
+    port: 3000,
+    baseApi: 'api',
+    secret: 'jwt_secret',
+    unless_path: [/\/api\/register/, /\/api\/login/]
+}

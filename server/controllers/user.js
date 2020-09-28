@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel.js");
 
-import { secret } from "./server/config";
+const config = require("../config");
 
 class UserController {
     // 用户注册
@@ -45,14 +45,14 @@ class UserController {
                 username: result.username,
                 _id: result._id,
             },
-            secret,
+            config.secret,
             { expiresIn: "2h" } //Eg: 60, "2 days", "10h", "7d"
         );
         return ctx.send(token, "登录成功");
     }
     // 获取用户信息
     static async userinfo(ctx) {
-        const data = ctx.request.body;
+        const data = ctx.state.user;
         const user = await userModel.findById(data._id);
         if (!user) return ctx.sendError("用户信息不存在");
         const result = {

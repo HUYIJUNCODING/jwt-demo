@@ -15,22 +15,23 @@ require("./server/framework/services/conndb");
 const utils = require("./server/framework/utils");
 const router = require("./server/routes/index");
 
-import { port, secret, unless_path } from "./server/config";
+const config =  require("./server/config");
 
 app.use(errorHandle)
+    .use(sendHandle)
     .use(utils.logger())
     .use(json())
     .use(bodyparser())
     .use(
         koajwt({
-            secret,
+            secret: config.secret,
             }).unless({
                 //设置不需要校验令牌的api
-            path: unless_path,
+            path: config.unless_path,
         })
     )
     .use(router.routes(), router.allowedMethods());
 
-app.listen(port, () =>
-    console.log(`✅  The server is running at http://localhost:${port}/`)
+app.listen(config.port, () =>
+    console.log(`✅  The server is running at http://localhost:${config.port}/`)
 );
