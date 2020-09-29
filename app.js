@@ -18,7 +18,7 @@ const router = require("./server/routes/index");
 const config =  require("./server/config");
 
 app.use(errorHandle)
-    .use(sendHandle)
+    .use(sendHandle())
     .use(utils.logger())
     .use(json())
     .use(bodyparser())
@@ -29,8 +29,7 @@ app.use(errorHandle)
                 //设置不需要校验令牌的api
             path: config.unless_path,
         })
-    )
-    .use(router.routes(), router.allowedMethods());
+    ).use(router.routes(), router.allowedMethods());
 
 app.listen(config.port, () =>
     console.log(`✅  The server is running at http://localhost:${config.port}/`)

@@ -28,9 +28,9 @@ class UserController {
     }
     // 用户登录
     static async login(ctx) {
-        const data = ctx.request.body;
+        const data = ctx.request;
         if (!data.username || !data.password) {
-            return ctx.sendError("参数不合法");
+            return ctx.sendError("用户名或密码不存在");
         }
         const result = await userModel.findOne({
             username: data.username,

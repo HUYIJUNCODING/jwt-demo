@@ -28,7 +28,7 @@ service.interceptors.response.use(
     response => {  
         console.log(response.data,'data')
         if (response.data.error !== 0) {
-            message.error(response["error_reason"]);
+            message.error(response.data["error_reason"]);
             return { fail: true };
         } else return response.data;
     },

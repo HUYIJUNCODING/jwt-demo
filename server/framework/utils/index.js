@@ -1,4 +1,4 @@
-const Moment = require("moment");
+const Moment = require("moment")();
 const koa_logger = require("koa-logger");
 
 exports.logger = function () {
