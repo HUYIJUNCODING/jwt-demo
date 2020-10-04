@@ -84,7 +84,8 @@
 
 <script>
 import { ref, reactive, defineComponent } from "vue";
-import { registerAPI, loginAPI } from "../api/login";
+import {  useRouter } from 'vue-router'
+import { registerAPI, loginAPI } from "../api/user";
 export default defineComponent({
     name: "Login",
     setup(props, ctx) {
@@ -98,6 +99,7 @@ export default defineComponent({
             passwordInputIsFocus: false, //密码输入框焦点状态
             confirmPasswordInputIsFocus: false, //确认密码输入框焦点状态
         });
+         const router = useRouter()
 
         //获取焦点
         function onFocus(statusName) {
@@ -146,6 +148,7 @@ export default defineComponent({
                 }).then((res) => {
                     if (res.error == 0) {
                         this.$message.success("注册成功");
+                        state.loginType = 1;
                     }
                 });
             } else {
@@ -155,6 +158,10 @@ export default defineComponent({
                     password: state.password,
                 }).then((res) => {
                     if (res.error == 0 && res.data) {
+                        //将令牌存入本地缓存
+                        localStorage.setItem('token',res.data.token);
+                        //路由跳转至首页
+                        router.replace('/')
                         this.$message.success("登录成功");
                     }
                 });

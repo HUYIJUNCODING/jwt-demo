@@ -7,6 +7,12 @@ import 'ant-design-vue/dist/antd.css';
 
 import router from "./router";
 
+router.beforeEach((to,from ,next) => {
+    if (!to.meta.noAuth && !localStorage.getItem('token')) {
+        next('/login')
+    }else next()
+});
+
 const app = createApp(App);
 app.use(Antd);
 app.use(router);

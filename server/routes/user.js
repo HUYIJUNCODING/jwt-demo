@@ -9,6 +9,6 @@ router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 
 //用户信息查询
-router.post("/userinfo", UserController.userinfo);
+router.get("/userinfo", UserController.userinfo);
 
 module.exports = router;

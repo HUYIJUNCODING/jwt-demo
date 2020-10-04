@@ -5,6 +5,7 @@ const koajwt = require("koa-jwt"); //Koa JWT 验证中间件
 const bodyparser = require("koa-bodyparser"); // Koa body体解析中间件
 // const serve = require("koa-static"); // Koa 静态文件服务中间件
 
+
 //自定义中间件
 errorHandle = require("./server/middlewares/errorHandle.js");
 sendHandle = require('./server/middlewares/sendHandle.js'); 
@@ -16,6 +17,7 @@ const utils = require("./server/framework/utils");
 const router = require("./server/routes/index");
 
 const config =  require("./server/config");
+const Auth = require('./server/framework/auth');
 
 app.use(errorHandle)
     .use(sendHandle())
@@ -25,6 +27,7 @@ app.use(errorHandle)
     .use(
         koajwt({
             secret: config.secret,
+            isRevoked: Auth.verify
             }).unless({
                 //设置不需要校验令牌的api
             path: config.unless_path,

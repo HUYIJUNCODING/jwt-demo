@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "../../router";
 import { message } from "ant-design-vue";
 
 const service = axios.create({
@@ -16,6 +17,9 @@ const service = axios.create({
 
 service.interceptors.request.use(
     (config) => {
+        !config.noAuth &&
+            (config.headers.common["Authorization"] =
+                "Bearer " + localStorage.getItem("token"));
         return config;
     },
     (error) => {
@@ -25,14 +29,20 @@ service.interceptors.request.use(
 
 // request interceptor
 service.interceptors.response.use(
-    response => {  
-        console.log(response.data,'data')
-        if (response.data.error !== 0) {
+    (response) => {
+        if (response.data.error === 401) {
+            message.error(response.data["error_reason"]);
+            setTimeout(()=>{
+                router.replace("/login");
+            },1000)
+           
+           
+        } else if (response.data.error !== 0) {
             message.error(response.data["error_reason"]);
             return { fail: true };
         } else return response.data;
     },
-    error => {
+    (error) => {
         return Promise.reject(error);
     }
 );

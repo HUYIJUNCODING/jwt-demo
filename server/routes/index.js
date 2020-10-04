@@ -1,10 +1,10 @@
 const router = require('koa-router')();
 
 const user  = require('./user')
-const info = require('./info')
+const todo = require('./todo')
 
 router.use('/api',user.routes(),user.allowedMethods())
-router.use('/api',info.routes(),info.allowedMethods())
+router.use('/api/todo',todo.routes(),todo.allowedMethods())
 
 module.exports = router;
 

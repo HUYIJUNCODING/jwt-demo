@@ -1,8 +1,7 @@
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
+const  Auth = require('../framework/auth');
 const userModel = require("../models/userModel.js");
 
-const config = require("../config");
 
 class UserController {
     // 用户注册
@@ -28,7 +27,7 @@ class UserController {
     }
     // 用户登录
     static async login(ctx) {
-        const data = ctx.request;
+        const data = ctx.request.body;
         if (!data.username || !data.password) {
             return ctx.sendError("用户名或密码不存在");
         }
@@ -40,15 +39,8 @@ class UserController {
                 .digest("hex"),
         });
         if (!result) return ctx.sendError("用户名或密码错误");
-        const token = jwt.sign(
-            {
-                username: result.username,
-                _id: result._id,
-            },
-            config.secret,
-            { expiresIn: "2h" } //Eg: 60, "2 days", "10h", "7d"
-        );
-        return ctx.send(token, "登录成功");
+        let token = Auth.sign(ctx,result);
+        return ctx.send({token}, "登录成功");
     }
     // 获取用户信息
     static async userinfo(ctx) {
@@ -57,7 +49,7 @@ class UserController {
         if (!user) return ctx.sendError("用户信息不存在");
         const result = {
             _id: user._id,
-            name: user.name,
+            username: user.username,
         };
         return ctx.send(result);
     }
