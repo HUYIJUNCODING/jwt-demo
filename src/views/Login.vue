@@ -176,10 +176,7 @@ export default defineComponent({
             switcher,
             submit,
         };
-    },
-    methods: {
-        //提交
-    },
+    }
 });
 </script>
 

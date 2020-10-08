@@ -19,9 +19,9 @@ export function editTodoAPI(data= {}) {
     });
 }
 
-export function delTodoAPI(data= {}) {
+export function removeTodoAPI(data= {}) {
     return request({
-        url: "api/todo/delete",
+        url: "api/todo/remove",
         method: "post",
         data,
         noAuth:false

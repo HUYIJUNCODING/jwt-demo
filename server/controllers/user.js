@@ -18,12 +18,10 @@ class UserController {
             password: crypto
                 .createHash("md5")
                 .update(data.password + "jwt_yan")
-                .digest("hex"), // 注册密码加密
+                .digest("hex") // 注册密码加密
         });
         const result = await user.save();
-        return result
-            ? ctx.send("恭喜,账号注册成功!")
-            : ctx.sendError("抱歉,注册失败!");
+        return result ? ctx.send("恭喜,账号注册成功!") : ctx.sendError("抱歉,注册失败!");
     }
     // 用户登录
     static async login(ctx) {

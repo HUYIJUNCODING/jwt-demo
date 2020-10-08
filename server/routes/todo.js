@@ -9,7 +9,7 @@ router.post("/add", TodoController.addTodo);
 router.post("/edit", TodoController.editTodo);
 
 //删除todo
-router.post("/delete", TodoController.delTodo);
+router.post("/remove", TodoController.removeTodo);
 
 //获取todo
 router.get("/list", TodoController.todolist);

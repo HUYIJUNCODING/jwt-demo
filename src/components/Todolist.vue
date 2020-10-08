@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="todoapp">
+    <div class="todoapp">
         <h1 class="header">todos</h1>
         <input
             v-model="newTodo"
@@ -9,7 +9,7 @@
             placeholder="What needs to be done?"
             @keyup.enter="addTodo"
         />
-        <!-- <TodoList/> -->
+        <TodoList/>
         <section v-show="todos.length" class="main">
             <input
                 v-model="allDone"
@@ -61,7 +61,9 @@
             </span>
             <ul class="filters">
                 <li>
-                    <a @click="onChangeFilter('all')" :class="{ selected: visibility == 'all' }"
+                    <a
+                        @click="onChangeFilter('all')"
+                        :class="{ selected: visibility == 'all' }"
                         >All</a
                     >
                 </li>
@@ -74,7 +76,7 @@
                 </li>
                 <li>
                     <a
-                         @click="onChangeFilter('completed')"
+                        @click="onChangeFilter('completed')"
                         :class="{ selected: visibility == 'completed' }"
                         >Completed</a
                     >
@@ -93,22 +95,22 @@
 
 <script>
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
-// localStorage persistence
-const STORAGE_KEY = "todos-vuejs-3.0";
-const todoStorage = {
-    fetch() {
-        const todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        todos.forEach((todo, index) => {
-            todo.id = index;
-        });
-        todoStorage.uid = todos.length;
-        return todos;
-    },
-    save(todos) {
-        if (!Array.isArray(todos)) return false;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-    },
-};
+import {
+    addTodoAPI,
+    editTodoAPI,
+    removeTodoAPI,
+    todolistAPI,
+} from "../api/todolist";
+
+async function getTodolist() {
+    let res = await todolistAPI();
+    console.log(res,'todolistResult')
+    return res;
+}
+function saveTodo(todos) {
+    if (!Array.isArray(todos)) return false;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+}
 // visibility filters
 const filters = {
     all(todos) {
@@ -128,7 +130,7 @@ const filters = {
 export default {
     name: "todolist",
     setup() {
-        const todos = ref(todoStorage.fetch());
+        const todos = ref([]);
         const visibility = ref("all");
         const newTodo = ref("");
         const editedTodo = ref(null);
@@ -145,43 +147,49 @@ export default {
                 });
             },
         });
-        watch(
-            todos,
-            (todos) => {
-                todoStorage.save(todos);
-            },
-            { deep: true }
-        );
         onMounted(() => {
-            
+            todos.value = getTodolist();
+            console.log(todos,'todostodostodostodostodostodostodostodostodostodostodos');
         });
-        const addTodo = () => {
+        const addTodo = async () => {
             const value = newTodo.value && newTodo.value.trim();
             if (!value) {
                 return;
             }
-            todos.value.push({
-                id: todoStorage.uid++,
+            let res = await addTodoAPI({
                 title: value,
                 completed: false,
             });
-            newTodo.value = "";
+            if (res.error == 0) {
+                todos.value = getTodolist();
+                newTodo.value = "";
+            }
         };
-        const removeTodo = (todo) => {
-            todos.value.splice(todos.value.indexOf(todo), 1);
+        const removeTodo = async (todo) => {
+            let res = await removeTodoAPI({
+                id: todo.id,
+            });
+            if (res.error == 0) {
+                todos = getTodolist();
+            }
         };
         const editTodo = (todo) => {
             beforeEditCache.value = todo.title;
             editedTodo.value = todo;
         };
-        const doneEdit = (todo) => {
+        const doneEdit = async (todo) => {
             if (!editedTodo.value) {
                 return;
             }
-            editedTodo.value = null;
-            todo.title = todo.title.trim();
+
             if (!todo.title) {
                 removeTodo(todo);
+                return;
+            }
+            let res = await editTodoAPI({ id: todo._id });
+            if (res.error == 0) {
+                editedTodo.value = null;
+                todos = getTodolist();
             }
         };
         const cancelEdit = (todo) => {
@@ -192,7 +200,7 @@ export default {
             todos.value = filters.active(todos.value);
         };
         const onChangeFilter = (visible) => {
-             visibility.value = visible
+            visibility.value = visible;
         };
         return {
             todos,
@@ -208,8 +216,9 @@ export default {
             doneEdit,
             cancelEdit,
             removeCompleted,
-            onChangeFilter
+            onChangeFilter,
         };
+        return {};
     },
     directives: {
         "todo-focus"(el, binding) {

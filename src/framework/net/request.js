@@ -32,14 +32,12 @@ service.interceptors.response.use(
     (response) => {
         if (response.data.error === 401) {
             message.error(response.data["error_reason"]);
-            setTimeout(()=>{
+            setTimeout(() => {
                 router.replace("/login");
-            },1000)
-           
-           
+            }, 1000);
         } else if (response.data.error !== 0) {
             message.error(response.data["error_reason"]);
-            return { fail: true };
+            return Promise.resolve({ fail: true });
         } else return response.data;
     },
     (error) => {
