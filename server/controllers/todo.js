@@ -20,8 +20,9 @@ class TodoController {
     static async removeTodo(ctx) {
         const data = ctx.request.body;
         const result = todoModel.findByIdAndRemove(data.id);
+        console.log(result,'result')
         if(!result) return ctx.sendError("todo删除失败");
-        return ctx.send();
+        return ctx.send({id: result._id},'todo移除成功');
     }
     // 获取todo
     static async todolist(ctx) {

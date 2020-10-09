@@ -9,7 +9,6 @@
             placeholder="What needs to be done?"
             @keyup.enter="addTodo"
         />
-        <TodoList/>
         <section v-show="todos.length" class="main">
             <input
                 v-model="allDone"
@@ -21,7 +20,7 @@
             <ul class="todo-list">
                 <li
                     v-for="todo in filteredTodos"
-                    :key="todo.id"
+                    :key="todo._id"
                     class="todo"
                     :class="{
                         completed: todo.completed,
@@ -104,8 +103,7 @@ import {
 
 async function getTodolist() {
     let res = await todolistAPI();
-    console.log(res,'todolistResult')
-    return res;
+    return (res && res.data && res.data.list) || [];
 }
 function saveTodo(todos) {
     if (!Array.isArray(todos)) return false;
@@ -147,9 +145,8 @@ export default {
                 });
             },
         });
-        onMounted(() => {
-            todos.value = getTodolist();
-            console.log(todos,'todostodostodostodostodostodostodostodostodostodostodos');
+        onMounted(async () => {
+            todos.value = await getTodolist();
         });
         const addTodo = async () => {
             const value = newTodo.value && newTodo.value.trim();
@@ -161,16 +158,16 @@ export default {
                 completed: false,
             });
             if (res.error == 0) {
-                todos.value = getTodolist();
+                todos.value = await getTodolist();
                 newTodo.value = "";
             }
         };
         const removeTodo = async (todo) => {
             let res = await removeTodoAPI({
-                id: todo.id,
+                id: todo._id,
             });
             if (res.error == 0) {
-                todos = getTodolist();
+                todos.value = await getTodolist();
             }
         };
         const editTodo = (todo) => {
@@ -189,7 +186,7 @@ export default {
             let res = await editTodoAPI({ id: todo._id });
             if (res.error == 0) {
                 editedTodo.value = null;
-                todos = getTodolist();
+                todos.value = await getTodolist();
             }
         };
         const cancelEdit = (todo) => {
@@ -408,6 +405,7 @@ export default {
     height: 40px;
     margin: auto 0;
     font-size: 30px;
+    cursor: pointer;
     color: #cc9a9a;
     margin-bottom: 11px;
     transition: color 0.2s ease-out;
