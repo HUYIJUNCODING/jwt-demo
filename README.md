@@ -12,4 +12,4 @@
 
 #### 效果展示
 
-![点击预览效果](http://static.ledouya.com/ZxunqV0k8ITwy5Vsx1e4aMCruGCKLOG5.webm)
+[点击预览效果](http://static.ledouya.com/ZxunqV0k8ITwy5Vsx1e4aMCruGCKLOG5.webm)
