@@ -12,4 +12,4 @@
 
 #### 效果展示
 
-![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f65e4e0577804a4f8cbef7848be8a3b7~tplv-k3u1fbpfcp-watermark.webp)
+![点击预览效果](http://static.ledouya.com/ZxunqV0k8ITwy5Vsx1e4aMCruGCKLOG5.webm)
