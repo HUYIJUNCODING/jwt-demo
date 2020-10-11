@@ -12,4 +12,4 @@
 
 #### 效果展示
 
-[效果展示](https://raw.githubusercontent.com/HUYIJUNCODING/jwt-demo/master/jwt-demo.mp4)
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f65e4e0577804a4f8cbef7848be8a3b7~tplv-k3u1fbpfcp-watermark.webp)
