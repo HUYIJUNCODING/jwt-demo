@@ -32,6 +32,7 @@
                             v-model="todo.completed"
                             class="toggle"
                             type="checkbox"
+                            @change="changeTodoStatus(todo)"
                         />
                         <label @dblclick="editTodo(todo)">{{
                             todo.title
@@ -140,8 +141,15 @@ export default {
         const allDone = computed({
             get: () => remaining.value === 0,
             set: (value) => {
+                let ids = [];
                 todos.value.forEach((todo) => {
                     todo.completed = value;
+                    ids.push(todo._id);
+                });
+                editTodoAPI({
+                    type: "all",
+                    ids,
+                    completed: allDone.value,
                 });
             },
         });
@@ -183,7 +191,10 @@ export default {
                 removeTodo(todo);
                 return;
             }
-            let res = await editTodoAPI({ id: todo._id });
+            let res = await editTodoAPI({
+                id: todo._id,
+                title: todo.title,
+            });
             if (res.error == 0) {
                 editedTodo.value = null;
                 todos.value = await getTodolist();
@@ -193,8 +204,28 @@ export default {
             editedTodo.value = null;
             todo.title = beforeEditCache.value;
         };
-        const removeCompleted = () => {
-            todos.value = filters.active(todos.value);
+        const changeTodoStatus = async (todo) => {
+            let res = await editTodoAPI({
+                id: todo._id,
+                completed: todo.completed,
+            });
+            if (res.error == 0) {
+                todos.value = await getTodolist();
+            }
+        };
+        const removeCompleted = async () => {
+            let ids = [];
+            todos.value.forEach((todo) => {
+                ids.push(todo._id);
+            });
+            let res = await editTodoAPI({
+                type: "all",
+                ids,
+                completed: false,
+            });
+            if (res.error == 0) {
+                todos.value = await getTodolist();
+            }
         };
         const onChangeFilter = (visible) => {
             visibility.value = visible;
@@ -210,12 +241,12 @@ export default {
             addTodo,
             removeTodo,
             editTodo,
+            changeTodoStatus,
             doneEdit,
             cancelEdit,
             removeCompleted,
             onChangeFilter,
         };
-        return {};
     },
     directives: {
         "todo-focus"(el, binding) {

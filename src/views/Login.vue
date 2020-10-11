@@ -52,6 +52,7 @@
                     maxlength="20"
                     v-model="state.password"
                     placeholder="请输入密码"
+                    @keyup.enter="doSubmit"
                     @focus="onFocus('passwordInputIsFocus')"
                     @blur="onBlur('passwordInputIsFocus')"
                 />
@@ -148,7 +149,8 @@ export default defineComponent({
                 }).then((res) => {
                     if (res.error == 0) {
                         this.$message.success("注册成功");
-                        state.loginType = 1;
+                        switcher();
+
                     }
                 });
             } else {
@@ -167,6 +169,12 @@ export default defineComponent({
                 });
             }
         }
+        //keyup.enter执行提交
+       function doSubmit() {
+           if(state.loginType) {
+               submit.call(this);
+           }
+        }
 
         return {
             state,
@@ -175,6 +183,7 @@ export default defineComponent({
             onBlur,
             switcher,
             submit,
+            doSubmit
         };
     }
 });
